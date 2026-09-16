@@ -1,0 +1,18 @@
+{
+  "train_mse": 0.14175225849926365,
+  "train_r2": 0.9940360917529577,
+  "test_mse": 0.18641184598076566,
+  "test_r2": 0.9924443028839129,
+  "prediction_std": 4.944666716125978,
+  "training_seed": 20260916,
+  "training_steps": 3500,
+  "reference_sobol_evaluations": 393216,
+  "reference_gas_evaluations": 659456,
+  "reference_gas_retained_90": 4,
+  "reference_dgsm_evaluations": 655360,
+  "repeats": 12,
+  "sobol_budget": 6144,
+  "gas_budget": 5184,
+  "dgsm_budget": 5120,
+  "noise_definition": "Gaussian additive output noise as a fraction of test prediction SD"
+}
