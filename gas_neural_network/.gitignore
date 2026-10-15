@@ -5,3 +5,4 @@ __pycache__/
 # The sweep can regenerate hundreds of per-model and per-repeat artifacts.
 results/dropout_sweep/runs/
 results/direction_intervention/intervention_by_start.csv
+results/end_to_end_budget/end_to_end_by_start.csv

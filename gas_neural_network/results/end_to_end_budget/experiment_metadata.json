@@ -1,0 +1,38 @@
+{
+  "training_seeds": [
+    2026101401,
+    2026101402,
+    2026101403,
+    2026101404,
+    2026101405
+  ],
+  "dropout_rate": 0.1,
+  "training_steps": 3500,
+  "starting_points_per_model": 256,
+  "mc_passes_per_candidate": 32,
+  "trust_region_radius": 0.15,
+  "gas_m": 64,
+  "gas_q": 4,
+  "gas_direction_evaluations": 5184,
+  "gas_candidate_budgets": [
+    4,
+    8,
+    12,
+    20
+  ],
+  "reuse_counts": [
+    1,
+    4,
+    16,
+    64,
+    256
+  ],
+  "gradient_equivalent_evaluations_per_start": 2,
+  "input_starting_region": "independent Uniform(0.2, 0.8)",
+  "selection_objective": "paired-mask Monte Carlo mean prediction",
+  "verification_objective": "known Friedman data-generating function",
+  "statistical_unit": "independently trained network",
+  "budget_rule": "GAS direction cost is divided by reuse count; saved calls fund additional paired candidates for comparators",
+  "gas_dimension_rule": "90% activity-eigenvalue energy from the charged low-budget CRN-GAS estimate",
+  "runtime_seconds": 35.77661320000061
+}

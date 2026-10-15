@@ -23,12 +23,14 @@ gas_neural_network/
 │   ├── neural_network_gas_demo.py
 │   ├── neural_network_gas_mc_dropout.py
 │   ├── neural_network_gas_mc_dropout_sweep.py
-│   └── neural_network_gas_direction_intervention.py
+│   ├── neural_network_gas_direction_intervention.py
+│   └── neural_network_gas_end_to_end_budget.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
 │   ├── dropout_sweep/
-│   └── direction_intervention/
+│   ├── direction_intervention/
+│   └── end_to_end_budget/
 ├── figures/
 ├── README.md
 └── requirements.txt
@@ -158,6 +160,33 @@ direction quality rather than end-to-end compute efficiency.
 
 ![Direction intervention](figures/direction_intervention_summary.png)
 
+## Experiment 5  End-to-end matched budget
+
+`neural_network_gas_end_to_end_budget.py` charges all forward evaluations used
+to estimate the CRN-GAS subspace and to select intervention candidates. The GAS
+dimension is selected from the charged low-budget estimate itself; no
+high-budget reference dimension is used. One CRN-GAS estimate costs 5,184
+model evaluations and can be amortized across 1, 4, 16, 64, or 256 optimization
+tasks.
+
+At the largest GAS search budget, one-shot CRN-GAS uses 20 candidates after
+paying for its subspace, while random and coordinate search can use 182
+candidates at the same total budget of 5,856 evaluations per task. Even in this
+conservative case, the mean verified improvement is 2.521 for CRN-GAS versus
+2.189 for random search. The paired difference is 0.333 with a cross-model 95%
+Student-t interval of [0.219, 0.446]. Coordinate search reaches 2.067 and the
+white-box local-gradient oracle reaches 2.811.
+
+The benefit depends on how much candidate search is performed. With only four
+GAS candidates, the subspace must be reused about 16 times before its advantage
+over random search has a strictly positive cross-model 95% interval. The first
+conclusive reuse counts are 16, 4, 1, and 1 for GAS candidate budgets of 4, 8,
+12, and 20, respectively. Thus GAS is most attractive when the global subspace
+is reused, but a sufficiently thorough GAS-directed search can already repay
+its estimation cost in a one-shot task on this benchmark.
+
+![End-to-end budget comparison](figures/end_to_end_budget_summary.png)
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -168,6 +197,7 @@ python experiments/neural_network_gas_demo.py
 python experiments/neural_network_gas_mc_dropout.py
 python experiments/neural_network_gas_mc_dropout_sweep.py
 python experiments/neural_network_gas_direction_intervention.py
+python experiments/neural_network_gas_end_to_end_budget.py
 ```
 
 Useful options include:
@@ -193,7 +223,10 @@ The most useful committed tables are:
 - `results/dropout_sweep/protocol_contrasts_across_models.csv`;
 - `results/dropout_sweep/gas_subspace_contrasts_across_models.csv`;
 - `results/direction_intervention/intervention_across_models.csv`;
-- `results/direction_intervention/method_contrasts_across_models.csv`.
+- `results/direction_intervention/method_contrasts_across_models.csv`;
+- `results/end_to_end_budget/end_to_end_across_models.csv`;
+- `results/end_to_end_budget/end_to_end_contrasts_across_models.csv`;
+- `results/end_to_end_budget/break_even_summary.csv`.
 
 ## Interpretation and limitation
 
@@ -202,8 +235,9 @@ its perturbation the same random environment, so their difference more directly
 measures the input perturbation. With independent dropout masks, the finite
 difference also contains the change in the network's active internal pathways.
 
-The present work establishes feasibility, stochastic-protocol robustness, and
-conditional direction usefulness on one synthetic regression family. The
-direction study excludes the cost of estimating each search space, so the next
-step is an end-to-end budget comparison followed by constrained data-mixture
-optimization on a small trainable model.
+The present work establishes feasibility, stochastic-protocol robustness,
+conditional direction usefulness, and end-to-end budget value on one synthetic
+regression family. The result is not yet evidence for language-model training:
+the next step is constrained data-mixture optimization on a small trainable
+model, where mixture weights lie on a simplex and every objective evaluation
+requires retraining or fine-tuning.
