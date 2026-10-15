@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# The sweep can regenerate hundreds of per-model and per-repeat artifacts.
+results/dropout_sweep/runs/

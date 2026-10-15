@@ -21,7 +21,7 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
 
-DEFAULT_OUT = Path(__file__).resolve().parent / "results"
+DEFAULT_OUT = Path(__file__).resolve().parents[1] / "results" / "pilot"
 FEATURES = tuple(f"x{i}" for i in range(1, 11))
 RELEVANT = set(range(5))
 
