@@ -1,0 +1,34 @@
+{
+  "n_sources": 6,
+  "source_names": [
+    "clean_left",
+    "clean_right",
+    "clean_center",
+    "noisy_left",
+    "biased_right",
+    "corrupted_center"
+  ],
+  "mixture_parameterization": "orthonormal centered log-ratio coordinates mapped from [0,1]^(K-1)",
+  "training_model": "one-hidden-layer ReLU MLP",
+  "training_steps_per_objective_evaluation": 120,
+  "reference_gas": {
+    "m": 24,
+    "q": 3,
+    "evaluations": 744
+  },
+  "low_budget_gas": {
+    "m": 8,
+    "q": 2,
+    "evaluations": 168
+  },
+  "sensitivity_repeats": 5,
+  "search_repeats": 6,
+  "candidate_budget_per_method": 20,
+  "candidate_direction_policy": "test learned basis axes at full and half radius, then fill remaining pairs with random subspace combinations",
+  "selection_training_seeds_per_candidate": 2,
+  "verification_training_seeds_per_selected_mixture": 12,
+  "search_radius_in_log_ratio_coordinates": 0.32,
+  "statistical_unit_for_search_intervals": "independent candidate-search repeat",
+  "runtime_seconds": 194.23928080000042,
+  "objective_cache_entries": 4016
+}

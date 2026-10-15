@@ -24,13 +24,15 @@ gas_neural_network/
 │   ├── neural_network_gas_mc_dropout.py
 │   ├── neural_network_gas_mc_dropout_sweep.py
 │   ├── neural_network_gas_direction_intervention.py
-│   └── neural_network_gas_end_to_end_budget.py
+│   ├── neural_network_gas_end_to_end_budget.py
+│   └── gas_data_mixture_pilot.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
 │   ├── dropout_sweep/
 │   ├── direction_intervention/
-│   └── end_to_end_budget/
+│   ├── end_to_end_budget/
+│   └── data_mixture_pilot/
 ├── figures/
 ├── README.md
 └── requirements.txt
@@ -187,6 +189,43 @@ its estimation cost in a one-shot task on this benchmark.
 
 ![End-to-end budget comparison](figures/end_to_end_budget_summary.png)
 
+## Experiment 6  Data-mixture pilot
+
+`gas_data_mixture_pilot.py` moves the variables from ordinary input features to
+six data-source weights on a simplex. The weights are represented by five
+orthonormal centered log-ratio coordinates. Every black-box objective
+evaluation retrains a one-hidden-layer ReLU MLP for 120 steps and returns clean
+validation loss; paired evaluations either reuse or independently redraw the
+training initialization and minibatch stream.
+
+The first result is positive for estimation protocol but deliberately negative
+for optimization advantage. At 168 train-and-evaluate calls per GAS estimate,
+CRN recovers the leading high-budget activity direction with mean absolute
+cosine 0.922, compared with 0.248 under independent training randomness. CRN
+also reduces the estimated 90%-energy dimension from 4.2 to 3.0 on average.
+
+However, the high-budget reference itself needs four of five directions to
+explain 90% of activity (energy fractions 0.53, 0.21, 0.15, 0.09, and 0.03).
+The mixture objective therefore has weak low-dimensional structure. With 20
+candidate mixtures, all methods improve over the uniform mixture, but the mean
+verified improvements are:
+
+- high-budget GAS reference: 0.0341 validation-MSE units;
+- low-budget CRN-GAS: 0.0224;
+- independent-noise GAS: 0.0334;
+- random directions: 0.0248;
+- coordinate directions: 0.0306.
+
+The paired CRN-GAS-minus-random difference is -0.0024 with a 95% Student-t
+interval of [-0.0158, 0.0110], and CRN-GAS-minus-coordinate is -0.0082 with an
+interval of [-0.0248, 0.0084]. Thus this pilot does not establish an
+optimization advantage for low-budget GAS. It instead identifies the next
+methodological requirement: test a direction-estimation budget curve and/or
+replace raw source weights with semantic factors such as data quality, domain
+balance, and task-cluster proportions.
+
+![Data-mixture pilot](figures/data_mixture_pilot_summary.png)
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -198,6 +237,7 @@ python experiments/neural_network_gas_mc_dropout.py
 python experiments/neural_network_gas_mc_dropout_sweep.py
 python experiments/neural_network_gas_direction_intervention.py
 python experiments/neural_network_gas_end_to_end_budget.py
+python experiments/gas_data_mixture_pilot.py
 ```
 
 Useful options include:
@@ -226,7 +266,10 @@ The most useful committed tables are:
 - `results/direction_intervention/method_contrasts_across_models.csv`;
 - `results/end_to_end_budget/end_to_end_across_models.csv`;
 - `results/end_to_end_budget/end_to_end_contrasts_across_models.csv`;
-- `results/end_to_end_budget/break_even_summary.csv`.
+- `results/end_to_end_budget/break_even_summary.csv`;
+- `results/data_mixture_pilot/gas_protocol_contrasts.csv`;
+- `results/data_mixture_pilot/mixture_search_summary.csv`;
+- `results/data_mixture_pilot/mixture_search_contrasts.csv`.
 
 ## Interpretation and limitation
 
@@ -235,9 +278,11 @@ its perturbation the same random environment, so their difference more directly
 measures the input perturbation. With independent dropout masks, the finite
 difference also contains the change in the network's active internal pathways.
 
-The present work establishes feasibility, stochastic-protocol robustness,
-conditional direction usefulness, and end-to-end budget value on one synthetic
-regression family. The result is not yet evidence for language-model training:
-the next step is constrained data-mixture optimization on a small trainable
-model, where mixture weights lie on a simplex and every objective evaluation
-requires retraining or fine-tuning.
+The feature-level studies establish feasibility, stochastic-protocol
+robustness, conditional direction usefulness, and end-to-end budget value on
+one synthetic regression family. The data-mixture pilot shows that the CRN
+principle transfers to a stochastic retraining objective, but also shows that
+GAS does not automatically provide an optimization advantage when the mixture
+objective is nearly full-dimensional. Before moving to language-model tuning,
+the next experiment should vary the GAS estimation budget and compare raw
+source weights with lower-dimensional semantic mixture factors.
