@@ -1,0 +1,27 @@
+{
+  "training_seeds": [
+    2026101401,
+    2026101402,
+    2026101403,
+    2026101404,
+    2026101405
+  ],
+  "dropout_rate": 0.1,
+  "training_steps": 3500,
+  "starting_points_per_model": 256,
+  "mc_passes_per_candidate": 32,
+  "trust_region_radius": 0.15,
+  "candidate_budgets": [
+    2,
+    4,
+    8,
+    12,
+    20
+  ],
+  "input_starting_region": "independent Uniform(0.2, 0.8)",
+  "selection_objective": "paired-mask Monte Carlo mean prediction",
+  "verification_objective": "known Friedman data-generating function",
+  "statistical_unit": "independently trained network",
+  "direction_estimation_cost_included_in_candidate_budget": false,
+  "runtime_seconds": 10.377864699999918
+}

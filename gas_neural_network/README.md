@@ -22,11 +22,13 @@ gas_neural_network/
 ├── experiments/
 │   ├── neural_network_gas_demo.py
 │   ├── neural_network_gas_mc_dropout.py
-│   └── neural_network_gas_mc_dropout_sweep.py
+│   ├── neural_network_gas_mc_dropout_sweep.py
+│   └── neural_network_gas_direction_intervention.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
-│   └── dropout_sweep/
+│   ├── dropout_sweep/
+│   └── direction_intervention/
 ├── figures/
 ├── README.md
 └── requirements.txt
@@ -115,6 +117,47 @@ contrast is consistent across independently trained models.
 
 ![Multi-model dropout sweep](figures/dropout_sweep_summary.png)
 
+## Experiment 4  Direction intervention
+
+`neural_network_gas_direction_intervention.py` tests whether the recovered GAS
+subspace is useful for constrained black-box search. Five independently trained
+10%-dropout networks are evaluated from 256 held-out starting points per model.
+Every method receives the same candidate budgets of 2, 4, 8, 12, or 20 points
+inside an L2 trust region of radius 0.15.
+
+The compared search spaces are:
+
+- the high-budget deterministic GAS reference subspace;
+- a low-budget GAS subspace estimated with paired dropout masks;
+- a low-budget GAS subspace estimated with independent masks;
+- random full-dimensional directions;
+- coordinate directions;
+- the deterministic local-gradient direction as an oracle;
+- the reference inactive subspace as a negative control.
+
+Candidate selection uses a 32-pass paired-mask MC-dropout mean. The selected
+candidate is then evaluated with the known Friedman function, so improvement is
+not judged only by the fitted neural network.
+
+At a 20-candidate budget, the mean verified objective decreases are:
+
+- local-gradient oracle: 2.811;
+- high-budget GAS reference: 2.555;
+- low-budget paired-mask GAS: 2.536;
+- coordinate search: 2.067;
+- independent-mask GAS: 1.980;
+- random directions: 1.663;
+- inactive subspace: 0.185.
+
+Paired-mask GAS exceeds random search by 0.873 on average, with a cross-model
+95% Student-t interval of [0.784, 0.961]. It is nearly indistinguishable from
+the high-budget GAS reference, although the local-gradient oracle remains 0.276
+better on average. Direction-estimation cost is reported separately and is not
+included in the candidate budget, so this experiment establishes conditional
+direction quality rather than end-to-end compute efficiency.
+
+![Direction intervention](figures/direction_intervention_summary.png)
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -124,6 +167,7 @@ python -m pip install -r requirements.txt
 python experiments/neural_network_gas_demo.py
 python experiments/neural_network_gas_mc_dropout.py
 python experiments/neural_network_gas_mc_dropout_sweep.py
+python experiments/neural_network_gas_direction_intervention.py
 ```
 
 Useful options include:
@@ -147,7 +191,9 @@ The most useful committed tables are:
 - `results/dropout_sweep/method_across_models.csv`;
 - `results/dropout_sweep/gas_subspace_across_models.csv`;
 - `results/dropout_sweep/protocol_contrasts_across_models.csv`;
-- `results/dropout_sweep/gas_subspace_contrasts_across_models.csv`.
+- `results/dropout_sweep/gas_subspace_contrasts_across_models.csv`;
+- `results/direction_intervention/intervention_across_models.csv`;
+- `results/direction_intervention/method_contrasts_across_models.csv`.
 
 ## Interpretation and limitation
 
@@ -156,8 +202,8 @@ its perturbation the same random environment, so their difference more directly
 measures the input perturbation. With independent dropout masks, the finite
 difference also contains the change in the network's active internal pathways.
 
-The present work establishes feasibility and stochastic-protocol robustness on
-one synthetic regression family. It does not yet establish that GAS directions
-improve an optimization objective. The next experiment will compare positive
-and negative interventions along GAS activity directions against random,
-coordinate, and local-gradient directions at a matched evaluation budget.
+The present work establishes feasibility, stochastic-protocol robustness, and
+conditional direction usefulness on one synthetic regression family. The
+direction study excludes the cost of estimating each search space, so the next
+step is an end-to-end budget comparison followed by constrained data-mixture
+optimization on a small trainable model.
