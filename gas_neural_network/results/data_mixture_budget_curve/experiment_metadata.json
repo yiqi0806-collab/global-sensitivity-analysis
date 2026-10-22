@@ -1,0 +1,50 @@
+{
+  "training_steps_per_objective_evaluation": 120,
+  "m_values": [
+    2,
+    4,
+    8,
+    16,
+    24
+  ],
+  "q": 2,
+  "logical_evaluation_budgets": [
+    42,
+    84,
+    168,
+    336,
+    504
+  ],
+  "nested_design": true,
+  "protocols": [
+    "crn",
+    "independent"
+  ],
+  "repeats": 6,
+  "reference_m": 24,
+  "reference_q": 3,
+  "reference_evaluations": 744,
+  "reference_unique_trainings": 744,
+  "reference_retained_dimension": 4,
+  "candidate_budget_per_method": 20,
+  "selection_training_seeds_per_candidate": 2,
+  "verification_training_seeds_per_selected_mixture": 8,
+  "search_radius_in_log_ratio_coordinates": 0.32,
+  "candidate_radius_schedule": "Every method uses 5 paired directions at the full radius and 5 paired directions at half radius.",
+  "budget_interpretation": "Logical costs describe a standalone GAS estimate at each prefix. Nested execution reuses every smaller prefix inside the largest design.",
+  "search_interpretation": "Search curves condition on the estimated directions and hold the 20-candidate search budget fixed; GAS direction-estimation calls are reported separately and are not included in that candidate budget.",
+  "adaptive_search_dimension": "Each CRN-GAS search uses its estimate's own 90%-energy dimension. The search curve therefore evaluates the complete estimated-basis procedure, not orientation alone.",
+  "independent_protocol_interpretation": "This is a deliberately naive independent-seed finite-difference control. Near-boundary differences can divide independent training noise by a small coordinate displacement, producing heavy-tailed errors.",
+  "reference_interpretation": "A fixed higher-budget CRN estimate used as a pathwise benchmark, not ground truth.",
+  "direction_curve_statistical_unit": "independent nested-design repeat conditional on one fixed synthetic data problem",
+  "search_statistical_unit": "independent direction-estimation and candidate-search repeat conditional on one fixed synthetic data problem",
+  "reference_design_seed": 2026101510,
+  "direction_design_seed_formula": "2026103000 + 100 * repeat",
+  "search_selection_seed_formula": "2026130000 + 1000 * repeat + index",
+  "search_verification_seed_formula": "2026140000 + 1000 * repeat + index",
+  "gas_candidate_seed_formula": "2026105000 + 1000 * repeat (shared across budgets)",
+  "runtime_seconds": 122.2939689999912,
+  "direction_curve_incremental_unique_trainings": 5904,
+  "search_incremental_unique_trainings": 2352,
+  "objective_cache_entries": 9000
+}

@@ -1,0 +1,19 @@
+contrast_family,metric,m_low,m_high,logical_evaluations_low,logical_evaluations_high,positive_means,n_repeats,mean_difference,sd_difference,ci95_low,ci95_high
+crn_budget_vs_minimum,top_direction_cosine,2,4,42,84,higher-budget estimate is closer to the reference,6,0.06197177894960513,0.10239769839927272,-0.04550549600538276,0.16944905390459303
+crn_budget_vs_minimum,top_direction_cosine,2,8,42,168,higher-budget estimate is closer to the reference,6,0.11824883809818393,0.1708293961966096,-0.061054781733450664,0.29755245792981855
+crn_budget_vs_minimum,top_direction_cosine,2,16,42,336,higher-budget estimate is closer to the reference,6,0.12690420005138142,0.17893045612327715,-0.06090234375975803,0.31471074386252085
+crn_budget_vs_minimum,top_direction_cosine,2,24,42,504,higher-budget estimate is closer to the reference,6,0.13877800304628546,0.17645382522241523,-0.04642905323285837,0.3239850593254293
+crn_budget_vs_minimum,trace_normalized_frobenius_error,2,4,42,84,higher-budget estimate is closer to the reference,6,0.08527043221575614,0.043187792736732955,0.03994025051024776,0.13060061392126454
+crn_budget_vs_minimum,trace_normalized_frobenius_error,2,8,42,168,higher-budget estimate is closer to the reference,6,0.15853135255034131,0.08905762513669603,0.06505590326501925,0.2520068018356634
+crn_budget_vs_minimum,trace_normalized_frobenius_error,2,16,42,336,higher-budget estimate is closer to the reference,6,0.16453739330489978,0.08064486091903969,0.07989203480371741,0.24918275180608213
+crn_budget_vs_minimum,trace_normalized_frobenius_error,2,24,42,504,higher-budget estimate is closer to the reference,6,0.1740022920693991,0.06725575570480467,0.10341022348593056,0.24459436065286766
+crn_vs_independent,top_direction_cosine,2,2,42,42,CRN estimate is closer to the reference,6,0.7271811253037089,0.12371911419072845,0.5973247568410471,0.8570374937663707
+crn_vs_independent,trace_normalized_frobenius_error,2,2,42,42,CRN estimate is closer to the reference,6,0.10925085129752517,0.09378478973869023,0.010813740005846673,0.20768796258920366
+crn_vs_independent,top_direction_cosine,4,4,84,84,CRN estimate is closer to the reference,6,0.6336199524925349,0.3216240658229414,0.29604128915376093,0.9711986158313088
+crn_vs_independent,trace_normalized_frobenius_error,4,4,84,84,CRN estimate is closer to the reference,6,0.09134178472533218,0.15496582635877862,-0.07131133139497754,0.2539949008456419
+crn_vs_independent,top_direction_cosine,8,8,168,168,CRN estimate is closer to the reference,6,0.6160251260962287,0.40455646439137805,0.1914000902026609,1.0406501619897965
+crn_vs_independent,trace_normalized_frobenius_error,8,8,168,168,CRN estimate is closer to the reference,6,0.19265628519440917,0.1871791478113432,-0.0038081378311667635,0.3891207082199851
+crn_vs_independent,top_direction_cosine,16,16,336,336,CRN estimate is closer to the reference,6,0.7691089458722887,0.3811444521337219,0.3690573068226048,1.1691605849219726
+crn_vs_independent,trace_normalized_frobenius_error,16,16,336,336,CRN estimate is closer to the reference,6,0.2848673406229883,0.2363986818742308,0.036741781865567286,0.5329928993804093
+crn_vs_independent,top_direction_cosine,24,24,504,504,CRN estimate is closer to the reference,6,0.7990728474906299,0.3910924928041644,0.3885796817356138,1.209566013245646
+crn_vs_independent,trace_normalized_frobenius_error,24,24,504,504,CRN estimate is closer to the reference,6,0.26766980640533894,0.2473079875730834,0.008093771060136312,0.5272458417505416

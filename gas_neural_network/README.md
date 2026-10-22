@@ -25,15 +25,18 @@ gas_neural_network/
 │   ├── neural_network_gas_mc_dropout_sweep.py
 │   ├── neural_network_gas_direction_intervention.py
 │   ├── neural_network_gas_end_to_end_budget.py
-│   └── gas_data_mixture_pilot.py
+│   ├── gas_data_mixture_pilot.py
+│   └── gas_data_mixture_budget_curve.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
 │   ├── dropout_sweep/
 │   ├── direction_intervention/
 │   ├── end_to_end_budget/
-│   └── data_mixture_pilot/
+│   ├── data_mixture_pilot/
+│   └── data_mixture_budget_curve/
 ├── figures/
+├── reports/
 ├── README.md
 └── requirements.txt
 ```
@@ -226,6 +229,52 @@ balance, and task-cluster proportions.
 
 ![Data-mixture pilot](figures/data_mixture_pilot_summary.png)
 
+## Experiment 7  Data-mixture direction-estimation budget curve
+
+`gas_data_mixture_budget_curve.py` holds the six-source loss-reweighting
+objective and 20-candidate search protocol fixed while increasing the nested CRN-GAS
+outer-sample budget. The five direction-estimation costs are 42, 84, 168, 336,
+and 504 logical train-and-evaluate calls, with six paired repeats at every
+budget. Independent-randomness GAS is retained as a negative protocol control.
+
+The mean leading-direction absolute cosine with a fixed 744-call CRN reference
+rises from 0.853 at 42 calls to 0.992 at 504 calls. The trace-normalized
+activity-matrix error falls from 0.446 to 0.272; the paired decrease is 0.174
+with a 95% Student-t interval of [0.103, 0.245]. The naive independent-seed
+finite-difference control fails to stabilize in this boundary-sensitive design:
+its leading-direction cosine is only 0.193 at 504 calls, versus 0.992 for CRN.
+
+Conditional on the same 20 candidate mixtures, CRN-GAS first has a positive
+unadjusted paired interval over random search at 84 direction-estimation calls. At 168
+calls it also exceeds coordinate search by 0.00357 validation-MSE units, with a
+95% interval of [0.00015, 0.00700]. At 504 calls, the corresponding advantages
+are 0.01369 [0.01096, 0.01642] over random search and 0.00378 [0.00288,
+0.00468] over coordinate search. At 504 calls, no difference from the fixed
+high-budget GAS reference is detected; this is not an equivalence result.
+
+This result refines the initial pilot: the earlier null search result was based
+on one low-budget direction estimate reused across every search repeat. In the
+revised protocol, each search repeat receives its own direction estimate and
+the earlier null does not persist. This is not a strict replication because
+the candidate-generation and evaluation seeds also differ. The reference spectrum still
+needs four of five directions for 90% activity, so the benefit is better
+orientation and prioritization rather than a strong dimension reduction.
+Direction-estimation cost remains separate from the candidate budget, and all
+repeats are conditional on one generated dataset; an end-to-end, multi-dataset
+confirmation is still required.
+
+Every method uses the same five full-radius and five half-radius paired
+directions. The GAS search uses its own estimated 90%-energy dimension at each
+budget, so the search curve evaluates the complete adaptive procedure rather
+than direction orientation alone. Also, the current trainer samples a fixed
+number of observations from every source and reweights their losses; true
+mixture-proportional source sampling is reserved for the next stage.
+
+![Data-mixture GAS budget curve](figures/data_mixture_budget_curve.png)
+
+A concise academic interpretation is available in
+[`reports/data_mixture_budget_curve_report.md`](reports/data_mixture_budget_curve_report.md).
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -238,6 +287,7 @@ python experiments/neural_network_gas_mc_dropout_sweep.py
 python experiments/neural_network_gas_direction_intervention.py
 python experiments/neural_network_gas_end_to_end_budget.py
 python experiments/gas_data_mixture_pilot.py
+python experiments/gas_data_mixture_budget_curve.py
 ```
 
 Useful options include:
@@ -269,7 +319,11 @@ The most useful committed tables are:
 - `results/end_to_end_budget/break_even_summary.csv`;
 - `results/data_mixture_pilot/gas_protocol_contrasts.csv`;
 - `results/data_mixture_pilot/mixture_search_summary.csv`;
-- `results/data_mixture_pilot/mixture_search_contrasts.csv`.
+- `results/data_mixture_pilot/mixture_search_contrasts.csv`;
+- `results/data_mixture_budget_curve/direction_diagnostics_summary.csv`;
+- `results/data_mixture_budget_curve/direction_budget_contrasts.csv`;
+- `results/data_mixture_budget_curve/budget_search_summary.csv`;
+- `results/data_mixture_budget_curve/budget_search_contrasts.csv`.
 
 ## Interpretation and limitation
 
@@ -280,9 +334,12 @@ difference also contains the change in the network's active internal pathways.
 
 The feature-level studies establish feasibility, stochastic-protocol
 robustness, conditional direction usefulness, and end-to-end budget value on
-one synthetic regression family. The data-mixture pilot shows that the CRN
-principle transfers to a stochastic retraining objective, but also shows that
-GAS does not automatically provide an optimization advantage when the mixture
-objective is nearly full-dimensional. Before moving to language-model tuning,
-the next experiment should vary the GAS estimation budget and compare raw
-source weights with lower-dimensional semantic mixture factors.
+one synthetic regression family. The data-mixture studies show that the CRN
+principle transfers to a stochastic retraining objective and that adequately
+estimated GAS directions can improve fixed-budget candidate search even when
+the activity spectrum is nearly full-dimensional. They do not yet establish
+an end-to-end data-mixture advantage across independently generated datasets.
+Before moving to language-model tuning, the next experiment should freeze a
+budget on development seeds, confirm it on held-out data-generation seeds, and
+test whether raw source-weight directions align with predeclared semantic
+contrasts rather than defining an artificially low-dimensional search space.
