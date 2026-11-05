@@ -1,0 +1,68 @@
+{
+  "experiment": "Experiment 8 - stochastic GAS estimand validation",
+  "benchmark": "F(x,xi)=sum_i alpha_i*x_i^2 + tau*xi*b^T*x",
+  "alpha": [
+    3.0,
+    2.0,
+    1.0,
+    0.5,
+    0.25,
+    0.125
+  ],
+  "b": [
+    0.0,
+    0.0,
+    0.0,
+    0.7071067811865475,
+    0.7071067811865475,
+    0.0
+  ],
+  "input_and_replacement_domain": "[-1,1]^d",
+  "dimension": 6,
+  "random_state_distribution": "standard normal",
+  "repeats": 200,
+  "k_outer_samples": 256,
+  "k_values": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "outer_sizes": [
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "amplitudes": [
+    0.0,
+    1.0,
+    2.5,
+    3.0
+  ],
+  "main_amplitude": 3.0,
+  "main_k": 8,
+  "min_separations": [
+    0.0,
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "fixed_budget_secant_vectors": 4096,
+  "base_seed": 20261104,
+  "rng_key_format": "base_seed:study_id:repeat[:parameter_index]",
+  "one_seed_interpretation": "one independent stochastic realization per outer anchor",
+  "coupling": "baseline and all coordinate replacements at an anchor share xi",
+  "independent_control": "each coordinate uses independent baseline and perturbed states",
+  "replacement_sampling_design": "X and V are jointly redrawn until each coordinate pair satisfies the stated minimum separation",
+  "logical_evaluation_cost": "per-estimator black-box call count; nested K and N reuse makes total script runtime smaller than the sum of these costs",
+  "u_statistic_psd_projection": "per-repeat error diagnostic only; the raw matrix is the unbiased estimator",
+  "max_numeric_secant_validation_error": 8.707479182135103e-13,
+  "runtime_seconds": 22.91492319991812,
+  "result_rows": 17200
+}

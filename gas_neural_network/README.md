@@ -1,19 +1,19 @@
 # GAS for Neural Networks
 
-This module studies whether Global Activity Scores (GAS) can provide stable
+This module studies whether the Global Activity Subspace (GAS) can provide stable
 global input-sensitivity rankings and low-dimensional activity directions for
 deterministic and stochastic neural networks.
 
 The current evidence supports a deliberately limited conclusion:
 
-> GAS can recover influential inputs and stable activity subspaces from a
+> GAS can recover influential inputs and stable Global Activity Subspaces from a
 > trained ReLU network when paired evaluations share their random state.
 > Independent stochastic evaluations can instead create false sensitivity and
 > a spurious high-dimensional activity space.
 
 The experiments do **not** show that GAS is universally more accurate than
 Sobol total-effect indices or DGSM for feature ranking. The potential advantage
-of GAS is its joint activity-subspace information.
+of GAS is its joint Global Activity Subspace information.
 
 ## Repository layout
 
@@ -26,7 +26,8 @@ gas_neural_network/
 │   ├── neural_network_gas_direction_intervention.py
 │   ├── neural_network_gas_end_to_end_budget.py
 │   ├── gas_data_mixture_pilot.py
-│   └── gas_data_mixture_budget_curve.py
+│   ├── gas_data_mixture_budget_curve.py
+│   └── stochastic_estimands_validation.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
@@ -34,7 +35,8 @@ gas_neural_network/
 │   ├── direction_intervention/
 │   ├── end_to_end_budget/
 │   ├── data_mixture_pilot/
-│   └── data_mixture_budget_curve/
+│   ├── data_mixture_budget_curve/
+│   └── stochastic_estimands/
 ├── figures/
 ├── reports/
 ├── README.md
@@ -275,6 +277,53 @@ mixture-proportional source sampling is reserved for the next stage.
 A concise academic interpretation is available in
 [`reports/data_mixture_budget_curve_report.md`](reports/data_mixture_budget_curve_report.md).
 
+## Experiment 8  Mean-response and pathwise GAS estimands
+
+`stochastic_estimands_validation.py` resolves a question left open by the
+dropout experiments: does a stochastic CRN-GAS calculation estimate the
+sensitivity of the expected response, or the expected sensitivity of individual
+random realizations? The experiment uses the analytic stochastic benchmark
+
+\[
+F(x,\xi)=\sum_{i=1}^{6}\alpha_i x_i^2+\tau\xi b^\top x,
+\qquad \xi\sim N(0,1),
+\]
+
+for which the mean-response matrix \(C_\mu\), random-path contribution
+\(C_{\mathrm{rand}}\), and pathwise matrix
+\(C_{\mathrm{path}}=C_\mu+C_{\mathrm{rand}}\) are known exactly.
+
+Across 200 Monte Carlo repetitions, the experiment confirms that:
+
+- one stochastic realization per outer anchor with CRN targets
+  \(C_{\mathrm{path}}\), not \(C_\mu\);
+- averaging \(K\) secant vectors before forming their outer product has exact
+  target \(C_\mu+C_{\mathrm{rand}}/K\), and the empirical bias follows the
+  predicted \(1/K\) curve;
+- a cross-seed U-statistic directly targets \(C_\mu\);
+- independent baseline and perturbation states are unstable because unrelated
+  stochastic output changes are divided by the replacement distance.
+
+At \(\tau=3\) and \(N=256\), the empirical relative bias of the K-average is
+1.3737, 0.6888, 0.3416, 0.1707, 0.0856, and 0.0435 for
+\(K=1,2,4,8,16,32\), closely matching the analytic \(1/K\) values. The raw
+U-statistic has empirical mean-matrix bias of about 0.007--0.009 and recovers
+the mean-response leading axis with cosine approximately 0.99998. Under a
+fixed budget of \(NK=4096\) secant vectors, the U-statistic has its lowest MSE
+at \(K=2\), showing that increasing inner stochastic replication can reduce
+outer input-space coverage too much.
+
+The independent-state negative control has median relative error 7063 when no
+minimum replacement separation is imposed, compared with approximately 0.10
+error for one-seed CRN relative to its correct pathwise target. Raw
+U-statistic matrices can be indefinite at finite sample sizes; the frequency of
+a negative eigenvalue falls from about 47% at \(K=2\) to 1% at \(K=32\).
+
+![Stochastic GAS estimands](figures/stochastic_estimands_summary.png)
+
+A full interpretation is available in
+[`reports/stochastic_estimands_report.md`](reports/stochastic_estimands_report.md).
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -288,6 +337,7 @@ python experiments/neural_network_gas_direction_intervention.py
 python experiments/neural_network_gas_end_to_end_budget.py
 python experiments/gas_data_mixture_pilot.py
 python experiments/gas_data_mixture_budget_curve.py
+python experiments/stochastic_estimands_validation.py
 ```
 
 Useful options include:
@@ -323,7 +373,10 @@ The most useful committed tables are:
 - `results/data_mixture_budget_curve/direction_diagnostics_summary.csv`;
 - `results/data_mixture_budget_curve/direction_budget_contrasts.csv`;
 - `results/data_mixture_budget_curve/budget_search_summary.csv`;
-- `results/data_mixture_budget_curve/budget_search_contrasts.csv`.
+- `results/data_mixture_budget_curve/budget_search_contrasts.csv`;
+- `results/stochastic_estimands/estimator_metrics_summary.csv`;
+- `results/stochastic_estimands/bias_variance_summary.csv`;
+- `results/stochastic_estimands/analytic_target_eigenvalues.csv`.
 
 ## Interpretation and limitation
 
@@ -339,7 +392,13 @@ principle transfers to a stochastic retraining objective and that adequately
 estimated GAS directions can improve fixed-budget candidate search even when
 the activity spectrum is nearly full-dimensional. They do not yet establish
 an end-to-end data-mixture advantage across independently generated datasets.
-Before moving to language-model tuning, the next experiment should freeze a
-budget on development seeds, confirm it on held-out data-generation seeds, and
-test whether raw source-weight directions align with predeclared semantic
-contrasts rather than defining an artificially low-dimensional search space.
+
+The analytic stochastic-estimand study establishes that one-seed CRN-GAS and
+mean-response GAS are different scientific targets, and it validates a
+cross-seed U-statistic for the latter. It is not yet a neural-network or
+real-data validation. The next feature-level experiment should implement both
+estimators for Monte Carlo dropout in PyTorch and test them on real regression
+and classification datasets across independently trained models. Separately,
+the data-mixture branch still requires a development/held-out dataset-seed
+split, true mixture-proportional sampling, and predeclared semantic contrasts
+before moving to language-model tuning.
