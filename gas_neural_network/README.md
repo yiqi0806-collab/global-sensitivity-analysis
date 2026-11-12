@@ -27,7 +27,8 @@ gas_neural_network/
 │   ├── neural_network_gas_end_to_end_budget.py
 │   ├── gas_data_mixture_pilot.py
 │   ├── gas_data_mixture_budget_curve.py
-│   └── stochastic_estimands_validation.py
+│   ├── stochastic_estimands_validation.py
+│   └── pytorch_stochastic_estimands_real_data.py
 ├── results/
 │   ├── pilot/
 │   ├── mc_dropout_pilot/
@@ -36,11 +37,14 @@ gas_neural_network/
 │   ├── end_to_end_budget/
 │   ├── data_mixture_pilot/
 │   ├── data_mixture_budget_curve/
-│   └── stochastic_estimands/
+│   ├── stochastic_estimands/
+│   ├── pytorch_stochastic_estimands_smoke/
+│   └── pytorch_stochastic_estimands_full/
 ├── figures/
 ├── reports/
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── requirements-pytorch.txt
 ```
 
 The committed result directories contain the compact tables needed to inspect
@@ -324,6 +328,38 @@ a negative eigenvalue falls from about 47% at \(K=2\) to 1% at \(K=32\).
 A full interpretation is available in
 [`reports/stochastic_estimands_report.md`](reports/stochastic_estimands_report.md).
 
+## Experiment 9  Real-data PyTorch stochastic estimands
+
+`pytorch_stochastic_estimands_real_data.py` transfers the Experiment 8 target
+distinction to a PyTorch Monte Carlo-dropout network trained on the scikit-learn
+diabetes regression dataset. The `10-64-32-1` ReLU network uses explicit
+per-observation dropout masks, so baseline and coordinate-replacement inputs can
+share exactly the same stochastic realization. Five independently trained
+networks are the statistical units; each uses validation-based early stopping.
+
+The one-mask CRN estimator has mean relative error 0.055 to its high-budget
+numerical \(C_{\mathrm{path}}\) reference. The independent-mask negative
+control has error 4.065. The paired cross-network difference is 4.010, with a
+95% Student-t interval of [3.526, 4.495]. Independent masks also inflate the
+estimated 90%-energy dimension to 7.5, compared with 2.4 for the numerical
+pathwise target.
+
+For the mean-response target, K-mask averaging reduces relative error from
+0.070 at K=1 to 0.014 at K=16. The cross-mask U-statistic has mean error 0.042
+at K=2, compared with 0.046 for K-mask averaging; its advantage is clearest at
+small K and becomes negligible as K increases. The five networks have held-out
+test \(R^2\) values from 0.458 to 0.507.
+
+These results reproduce the analytic estimand distinction in one real-data
+neural-network setting. They do not yet establish generality across datasets,
+architectures, or prediction tasks. The intervals quantify training-randomness
+variation conditional on one fixed dataset split and sensitivity design.
+
+![PyTorch stochastic estimands](figures/pytorch_stochastic_estimands_summary.png)
+
+A full interpretation is available in
+[`reports/pytorch_stochastic_estimands_report.md`](reports/pytorch_stochastic_estimands_report.md).
+
 ## Run the experiments
 
 From the `gas_neural_network` directory:
@@ -338,6 +374,15 @@ python experiments/neural_network_gas_end_to_end_budget.py
 python experiments/gas_data_mixture_pilot.py
 python experiments/gas_data_mixture_budget_curve.py
 python experiments/stochastic_estimands_validation.py
+python experiments/pytorch_stochastic_estimands_real_data.py --profile smoke
+python experiments/pytorch_stochastic_estimands_real_data.py \
+  --profile full --out results/pytorch_stochastic_estimands_full
+```
+
+The PyTorch experiment additionally requires:
+
+```bash
+python -m pip install -r requirements-pytorch.txt
 ```
 
 Useful options include:
@@ -376,7 +421,10 @@ The most useful committed tables are:
 - `results/data_mixture_budget_curve/budget_search_contrasts.csv`;
 - `results/stochastic_estimands/estimator_metrics_summary.csv`;
 - `results/stochastic_estimands/bias_variance_summary.csv`;
-- `results/stochastic_estimands/analytic_target_eigenvalues.csv`.
+- `results/stochastic_estimands/analytic_target_eigenvalues.csv`;
+- `results/pytorch_stochastic_estimands_full/model_metrics.csv`;
+- `results/pytorch_stochastic_estimands_full/estimator_metrics_across_models.csv`;
+- `results/pytorch_stochastic_estimands_full/paired_contrasts_across_models.csv`.
 
 ## Interpretation and limitation
 
@@ -394,11 +442,9 @@ the activity spectrum is nearly full-dimensional. They do not yet establish
 an end-to-end data-mixture advantage across independently generated datasets.
 
 The analytic stochastic-estimand study establishes that one-seed CRN-GAS and
-mean-response GAS are different scientific targets, and it validates a
-cross-seed U-statistic for the latter. It is not yet a neural-network or
-real-data validation. The next feature-level experiment should implement both
-estimators for Monte Carlo dropout in PyTorch and test them on real regression
-and classification datasets across independently trained models. Separately,
-the data-mixture branch still requires a development/held-out dataset-seed
-split, true mixture-proportional sampling, and predeclared semantic contrasts
-before moving to language-model tuning.
+mean-response GAS are different scientific targets, and Experiment 9 now
+reproduces that distinction in independently trained PyTorch networks on one
+real regression dataset. Generality across classification, architectures, and
+dropout rates remains open. Separately, the data-mixture branch still requires
+a development/held-out dataset-seed split, true mixture-proportional sampling,
+and predeclared semantic contrasts before moving to language-model tuning.

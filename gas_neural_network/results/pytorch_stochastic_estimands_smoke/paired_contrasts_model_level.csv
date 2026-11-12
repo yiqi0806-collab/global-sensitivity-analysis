@@ -1,0 +1,13 @@
+training_seed,contrast,value,positive_means
+1101,independent_minus_paired_path_error,7.525063565851777,independent masks have larger C_path error
+1101,paired_minus_independent_target_cosine,0.681606142276979,paired masks recover the target axis better
+1101,k_average_K1_minus_K8_mu_error,0.055110984001254144,averaging more masks reduces C_mu error
+1101,k_average_minus_u_stat_mu_error_K2,0.006394090374191891,U-statistic has smaller C_mu error
+1101,k_average_minus_u_stat_mu_error_K4,0.004184957011354438,U-statistic has smaller C_mu error
+1101,k_average_minus_u_stat_mu_error_K8,0.0018129439248173798,U-statistic has smaller C_mu error
+2202,independent_minus_paired_path_error,5.368784542862032,independent masks have larger C_path error
+2202,paired_minus_independent_target_cosine,0.6408177635750949,paired masks recover the target axis better
+2202,k_average_K1_minus_K8_mu_error,0.06936329131680607,averaging more masks reduces C_mu error
+2202,k_average_minus_u_stat_mu_error_K2,0.005175253731603012,U-statistic has smaller C_mu error
+2202,k_average_minus_u_stat_mu_error_K4,0.0016343044422804098,U-statistic has smaller C_mu error
+2202,k_average_minus_u_stat_mu_error_K8,0.00043458891587877524,U-statistic has smaller C_mu error

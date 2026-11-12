@@ -1,0 +1,36 @@
+training_seed,contrast,value,positive_means
+1101,independent_minus_paired_path_error,3.844531909573976,independent masks have larger C_path error
+1101,paired_minus_independent_target_cosine,0.43981984299125365,paired masks recover the target axis better
+1101,k_average_K1_minus_K16_mu_error,0.05467255369623549,averaging more masks reduces C_mu error
+1101,k_average_minus_u_stat_mu_error_K2,0.000411105219334941,U-statistic has smaller C_mu error
+1101,k_average_minus_u_stat_mu_error_K4,-0.00015673654633598447,U-statistic has smaller C_mu error
+1101,k_average_minus_u_stat_mu_error_K8,-0.00017142994807327339,U-statistic has smaller C_mu error
+1101,k_average_minus_u_stat_mu_error_K16,0.0002787394052378,U-statistic has smaller C_mu error
+2202,independent_minus_paired_path_error,3.6469761819041073,independent masks have larger C_path error
+2202,paired_minus_independent_target_cosine,0.2868793988418803,paired masks recover the target axis better
+2202,k_average_K1_minus_K16_mu_error,0.06099004308752842,averaging more masks reduces C_mu error
+2202,k_average_minus_u_stat_mu_error_K2,0.005489419431098964,U-statistic has smaller C_mu error
+2202,k_average_minus_u_stat_mu_error_K4,0.001948110424889505,U-statistic has smaller C_mu error
+2202,k_average_minus_u_stat_mu_error_K8,0.001138653048140939,U-statistic has smaller C_mu error
+2202,k_average_minus_u_stat_mu_error_K16,0.0003164096210116103,U-statistic has smaller C_mu error
+3303,independent_minus_paired_path_error,3.9690679931879487,independent masks have larger C_path error
+3303,paired_minus_independent_target_cosine,0.3965814294145126,paired masks recover the target axis better
+3303,k_average_K1_minus_K16_mu_error,0.0628095701418063,averaging more masks reduces C_mu error
+3303,k_average_minus_u_stat_mu_error_K2,0.0067183224156253385,U-statistic has smaller C_mu error
+3303,k_average_minus_u_stat_mu_error_K4,0.0034680210595267567,U-statistic has smaller C_mu error
+3303,k_average_minus_u_stat_mu_error_K8,0.0003350786872189579,U-statistic has smaller C_mu error
+3303,k_average_minus_u_stat_mu_error_K16,0.00010159448963999868,U-statistic has smaller C_mu error
+4404,independent_minus_paired_path_error,4.672954324249033,independent masks have larger C_path error
+4404,paired_minus_independent_target_cosine,0.3906748614373009,paired masks recover the target axis better
+4404,k_average_K1_minus_K16_mu_error,0.043482942981447795,averaging more masks reduces C_mu error
+4404,k_average_minus_u_stat_mu_error_K2,0.0029321127957283796,U-statistic has smaller C_mu error
+4404,k_average_minus_u_stat_mu_error_K4,-0.0012868531379436818,U-statistic has smaller C_mu error
+4404,k_average_minus_u_stat_mu_error_K8,-0.0011776661223735115,U-statistic has smaller C_mu error
+4404,k_average_minus_u_stat_mu_error_K16,-0.0007386123144337772,U-statistic has smaller C_mu error
+5505,independent_minus_paired_path_error,3.917634300085155,independent masks have larger C_path error
+5505,paired_minus_independent_target_cosine,0.4013163556833913,paired masks recover the target axis better
+5505,k_average_K1_minus_K16_mu_error,0.055553865187010235,averaging more masks reduces C_mu error
+5505,k_average_minus_u_stat_mu_error_K2,0.001869009104060071,U-statistic has smaller C_mu error
+5505,k_average_minus_u_stat_mu_error_K4,0.0028761665445824654,U-statistic has smaller C_mu error
+5505,k_average_minus_u_stat_mu_error_K8,0.0018468027942363033,U-statistic has smaller C_mu error
+5505,k_average_minus_u_stat_mu_error_K16,0.0005854521849882263,U-statistic has smaller C_mu error

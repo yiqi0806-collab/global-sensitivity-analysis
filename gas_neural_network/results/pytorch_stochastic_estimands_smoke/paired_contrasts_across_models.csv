@@ -1,0 +1,7 @@
+contrast,networks,mean,sd,ci95_low,ci95_high,positive_means
+independent_minus_paired_path_error,2,6.446924054356905,1.524719519286352,-7.25213731313383,20.14598542184764,independent masks have larger C_path error
+k_average_K1_minus_K8_mu_error,2,0.062237137659030106,0.01007790315038141,-0.028309229699945745,0.15278350501800597,averaging more masks reduces C_mu error
+k_average_minus_u_stat_mu_error_K2,2,0.005784672052897451,0.0008618476551332406,-0.0019587219076024516,0.013528066013397354,U-statistic has smaller C_mu error
+k_average_minus_u_stat_mu_error_K4,2,0.002909630726817424,0.0018035837280431341,-0.013294926150263132,0.019114187603897978,U-statistic has smaller C_mu error
+k_average_minus_u_stat_mu_error_K8,2,0.0011237664203480775,0.0009746441737029316,-0.007633064051182222,0.009880596891878377,U-statistic has smaller C_mu error
+paired_minus_independent_target_cosine,2,0.661211952926037,0.02884173917370721,0.40207920759940396,0.92034469825267,paired masks recover the target axis better

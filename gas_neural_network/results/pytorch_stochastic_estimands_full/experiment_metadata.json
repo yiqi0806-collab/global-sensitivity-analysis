@@ -1,0 +1,44 @@
+{
+  "experiment": 9,
+  "profile": "full",
+  "dataset": "scikit-learn diabetes regression",
+  "architecture": "10-64-32-1 ReLU MLP",
+  "dropout_rate": 0.2,
+  "dropout_implementation": "explicit per-sample inverted-dropout masks",
+  "base_seed": 20261111,
+  "min_standardized_coordinate_separation": 0.1,
+  "profile_parameters": {
+    "training_seeds": [
+      1101,
+      2202,
+      3303,
+      4404,
+      5505
+    ],
+    "epochs": 250,
+    "anchors": 96,
+    "reference_masks": 128,
+    "repeats": 12,
+    "k_values": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ]
+  },
+  "data_sizes": {
+    "training": 246,
+    "validation": 36,
+    "sensitivity_pool": 71,
+    "test": 89
+  },
+  "reference_status": "High-budget numerical references; C_mu uses the cross-mask U-statistic and neither matrix is analytic ground truth.",
+  "statistical_unit": "Independently trained network; repeats are internal Monte Carlo repetitions.",
+  "total_seconds": 6.664438299834728,
+  "software": {
+    "torch": "2.15.0+cpu",
+    "numpy": "2.2.6",
+    "pandas": "2.2.3"
+  }
+}
